@@ -1,41 +1,25 @@
-import numpy as np
-from scipy import signal
-from scipy.fftpack import rfft, irfft, fftfreq
-from scipy.signal import butter, lfilter
+from numpy import *
+from numpy.fft import *
 
-def pulse_shaping():
-    pass
+def blm_channel(length, fs, ch_bw):
+    blm_freq=zeros(length))
+    s=round(length/fs)*(fs/2-ch_bw))
+    e=round(length/fs)*(fs/2+ch_bw))
+    print(f"S {s}  e {e}")
+    blm_freq[s:e] = 1
+    return blm_freq
 
+def square_pulse(length, start, end, on_value):
+    square_pulse = zeros(length)
+    square_pulse[start:end]=on_value
 
-def generate_cos_signal(freq, time, sampling_frequency):
-    nsamples = time * sampling_frequency
-    time   = np.linspace(0, time, nsamples)
-    cos_signal = np.cos(freq*2*np.pi*time) 
-    return cos_signal, time
-def generate_square_signal(time, sampling_frequency):
-    nsamples = int(time * sampling_frequency)
-    time_range   = np.linspace(0, time, nsamples)
-    factor = (2*np.pi)/time
-    square_signal = signal.square(factor*time_range, 1)
-    return square_signal, time_range
+    return square_pulse
 
+def signal_fft(in_signal):
+    return fftshift(fft(in_signal))
 
-def compute_BER(input_sig, output_signal):
-    pass
-
-def awgn_channel():
-    pass
+def signal_real_ifft(in_signal):
+    return real(fftshift(fft(in_signal)))
 
 
-def butter_bandpass(lowcut, highcut, fs, order=5):
-    nyq = 0.5 * fs
-    low = lowcut / nyq
-    high = highcut / nyq
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
 
-
-def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
